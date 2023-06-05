@@ -11,6 +11,13 @@ def extract_ip_address(line):
         return match.group(0)
     else:
         return None
+   
+def extract_mac_address(line):
+    match = re.search(r'([0-9A-Fa-f]{2}[:-]){1,5}([0-9A-Fa-f]{2})', line)
+    if match:
+        return match.group(0)
+    else:
+        return None
 
 def get_default_gateway():
     #gets the gateway (router) IP, this is a cross-platform system
@@ -30,8 +37,23 @@ def main():
         if(extract_ip_address(device) != gateway):
             #we do not need the gateway
             devices.append(device)
-    for device in devices:
-        print(device)
+        else:
+            gateway = (gateway, extract_mac_address(device))
+    for i in range(len(devices)):
+        print("[", i, "]: ", devices[i])
+    
+    #target selection
+    print("What follows is the not-so-legal part, continue at own risk!")
+    response = -1
+    while response not in range(0, len(devices)):
+        response = int(input("select target on index [number]: "))
+        if(response not in range(0, len(devices))):
+            print("Invalid target you dumb-dumb!")
+    target = devices[response]
+    target = (extract_ip_address(target), extract_mac_address(target))
+    print("Target ", target[0], " at ", target[1], " selected, proceeding with ARP poisoning using gateway ", gateway[0], " at ", gateway[1])
+
+    #actual poisoning here
 
 match platform.system():
     case "Linux":
