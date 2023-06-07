@@ -73,14 +73,14 @@ else:
 quit = False
 while quit == False:
     response = input("[Y/N]: ")
-    match response:
-    if(response == "y" | "Y" | "Yes" | "yes"):
+    #match response:
+    if(response IN ["y", "Y", "Yes", "yes"]):
         #case "y" | "Y" | "Yes" | "yes":
         print("Proceeding!")
         main()
         quit = True
         #case "n" | "N" | "No" | "no":
-    if(response == "n" | "N" | "No" | "no"):
+    if(response IN ["n", "N", "No", "no"]):
         print("Stopping!")
         quit = True
         #case other:
