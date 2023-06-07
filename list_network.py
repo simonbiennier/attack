@@ -3,6 +3,8 @@ import platform
 import netifaces
 import re
 
+from arp import function_that_do_the_thing
+
 
 def extract_ip_address(line):
     #this gets the IP adress from the string output of 'arp -a'
@@ -53,6 +55,7 @@ def main():
     target = (extract_ip_address(target), extract_mac_address(target))
     print("Target ", target[0], " at ", target[1], " selected, proceeding with ARP poisoning using gateway ", gateway[0], " at ", gateway[1])
 
+    function_that_do_the_thing(target[0], gateway[0])
     #actual poisoning here
 
     
@@ -86,3 +89,4 @@ while quit == False:
         #case other:
     else:
         print("Unrecognized response, read this please!!!")
+
