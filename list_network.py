@@ -55,15 +55,21 @@ def main():
 
     #actual poisoning here
 
-match platform.system():
-    case "Linux":
-        print("Host OS is Linux, a-ok to proceed! continue?")
-    case "Windows":
-        print("Host OS is Windows, should be fine. Proceed?")
-    case "Darwin":
-        print("Host OS is MacOS, [placeholder_name] cannot operate correctly in this setting, proceed anyway?")
-    case other:
-        print("Host OS not recognized.  [placeholder_name] cannot guarantee correct operation, proceed anyway?")
+    
+running_os = platform.system()
+#match platform.system():
+    #case "Linux":
+if(running_os == "Linux"):
+    print("Host OS is Linux, a-ok to proceed! continue?")
+    #case "Windows":
+elif(running_os == "Windows"):
+    print("Host OS is Windows, should be fine. Proceed?")
+    #case "Darwin":
+elif(running_os == "Darwin"):
+    print("Host OS is MacOS, [placeholder_name] cannot operate correctly in this setting, proceed anyway?")
+    #case other:
+else:
+    print("Host OS not recognized.  [placeholder_name] cannot guarantee correct operation, proceed anyway?")
 quit = False
 while quit == False:
     response = input("[Y/N]: ")
