@@ -10,7 +10,7 @@ class MyServer(BaseHTTPRequestHandler):
         self.send_header("Content-type", "text/html")
         self.end_headers()
         with open("./wwwroot/index.html", "rb") as f:
-            self.wfile.write(f.read(), "utf-8")
+            self.wfile.write(f.read())
 
 
 if __name__ == "__main__":
