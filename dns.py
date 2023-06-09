@@ -2,13 +2,12 @@ from scapy.all import *
 from netfilterqueue import NetfilterQueue
 import os
 
+web_server = "192.168.56.102"
+hosts = [b"www.google.com", b"google.com", b"facebook.com"]
+
 # DNS mapping records, feel free to add/modify this dictionary
 # for example, google.com will be redirected to 192.168.1.100
-dns_hosts = {
-    b"www.google.com.": "192.168.1.100",
-    b"google.com.": "192.168.1.100",
-    b"facebook.com.": "172.217.19.142",
-}
+dns_hosts = {i: web_server for i in hosts}
 
 
 def process_packet(packet):
