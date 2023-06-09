@@ -5,8 +5,6 @@ import platform
 import netifaces
 import re
 
-from archive.arp import arp_spoof
-
 
 def get_mac(ip):
     """
