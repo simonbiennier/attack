@@ -3,7 +3,7 @@ import platform
 import netifaces
 import re
 
-from arp import function_that_do_the_thing
+from archive.arp import function_that_do_the_thing
 
 
 def extract_ip_address(line):
@@ -13,7 +13,7 @@ def extract_ip_address(line):
         return match.group(0)
     else:
         return None
-   
+
 def extract_mac_address(line):
     match = re.search(r'([0-9A-Fa-f]{2}[:-]){1,5}([0-9A-Fa-f]{2})', line)
     if match:
@@ -49,7 +49,7 @@ def main():
 
     #grab the other devices
     devices = []
-    for device in os.popen('arp -a'): 
+    for device in os.popen('arp -a'):
         if(extract_ip_address(device) != gateway or not(use_default_gateway)):
             #we do not need the gateway
             devices.append(device)
@@ -57,7 +57,7 @@ def main():
             gateway = (gateway, extract_mac_address(device))
     for i in range(len(devices)):
         print("[", i, "]: ", devices[i])
-    
+
     #optional host selection
     if(not(use_default_gateway)):
         response = -1
@@ -85,7 +85,7 @@ def main():
     function_that_do_the_thing(target[0], gateway[0])
     #actual poisoning here
 
-    
+
 running_os = platform.system()
 #match platform.system():
     #case "Linux":

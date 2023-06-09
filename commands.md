@@ -1,3 +1,4 @@
-`iptables -I FORWARD -j NFQUEUE --queue-num 0`
+Flip your machine into forwarding mode (as root):
+`echo "1" > /proc/sys/net/ipv4/ip_forward`
 
-`pip3 install netfilterqueue scapy`
+`iptables -I FORWARD -j NFQUEUE --queue-num 0`
