@@ -2,9 +2,7 @@ from http.server import SimpleHTTPRequestHandler, HTTPServer
 from os import curdir, sep
 import ssl
 
-
 hostName = "192.168.86.42"
-serverPort = 443
 
 
 class MyServer(SimpleHTTPRequestHandler):
@@ -20,7 +18,7 @@ class MyServer(SimpleHTTPRequestHandler):
                 mimetype = "image/png"
                 sendReply = True
             if self.path.endswith(".ico"):
-                mimetype = "image/webp"
+                mimetype = "image/x-icon"
                 sendReply = True
 
             if sendReply:
@@ -35,16 +33,19 @@ class MyServer(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    httpd = HTTPServer((hostName, serverPort), MyServer)
+    http = HTTPServer((hostName, 80), MyServer)
+
+    https = HTTPServer((hostName, 443), MyServer)
     print(f"Server started at http://{hostName}:{serverPort}")
     ctx = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS_SERVER)
     ctx.load_cert_chain(certfile="CA.pem", keyfile="CA.key")
-    httpd.socket = ctx.wrap_socket(httpd.socket, server_side=True)
+    https.socket = ctx.wrap_socket(https.socket, server_side=True)
 
     try:
-        httpd.serve_forever()
+        http.serve_forever()
+        https.serve_forever()
     except KeyboardInterrupt:
         pass
 
-    httpd.server_close()
+    https.server_close()
     print("Server stopped.")
