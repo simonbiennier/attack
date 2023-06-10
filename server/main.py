@@ -33,16 +33,14 @@ class MyServer(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    http = HTTPServer((hostName, 80), MyServer)
-
+    # http = HTTPServer((hostName, 80), MyServer)
     https = HTTPServer((hostName, 443), MyServer)
-    print(f"Server started at http://{hostName}:{serverPort}")
     ctx = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS_SERVER)
     ctx.load_cert_chain(certfile="CA.pem", keyfile="CA.key")
     https.socket = ctx.wrap_socket(https.socket, server_side=True)
 
     try:
-        http.serve_forever()
+        # http.serve_forever()
         https.serve_forever()
     except KeyboardInterrupt:
         pass
