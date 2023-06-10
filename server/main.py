@@ -1,11 +1,13 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 from os import curdir, sep
+import ssl
+
 
 hostName = "192.168.86.42"
-serverPort = 80
+serverPort = 443
 
 
-class MyServer(BaseHTTPRequestHandler):
+class MyServer(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             self.path = "/index.html"
@@ -35,6 +37,9 @@ class MyServer(BaseHTTPRequestHandler):
 if __name__ == "__main__":
     httpd = HTTPServer((hostName, serverPort), MyServer)
     print(f"Server started at http://{hostName}:{serverPort}")
+    ctx = ssl.SSLContext(protocol=ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain(certfile="CA.pem", keyfile="CA.key")
+    httpd.socket = ctx.wrap_socket(httpd.socket, server_side=True)
 
     try:
         httpd.serve_forever()
