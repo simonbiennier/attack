@@ -1,12 +1,12 @@
 #!/usr/bin/python
 
 """sslstrip is a MITM tool that implements Moxie Marlinspike's SSL stripping attacks."""
- 
+
 __author__ = "Moxie Marlinspike"
-__email__  = "moxie@thoughtcrime.org"
-__license__= """
+__email__ = "moxie@thoughtcrime.org"
+__license__ = """
 Copyright (c) 2004-2009 Moxie Marlinspike <moxie@thoughtcrime.org>
- 
+
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as
 published by the Free Software Foundation; either version 3 of the
@@ -31,7 +31,6 @@ from sslstrip.StrippingProxy import StrippingProxy
 from sslstrip.URLMonitor import URLMonitor
 from sslstrip.CookieCleaner import CookieCleaner
 from sslstrip.ResponseTampererFactory import ResponseTampererFactory
-from sslstrip.HTMLInjector import HTMLInjector
 
 from plugins_manager import ProxyPluginsManager
 from plugins import *
@@ -39,6 +38,7 @@ from plugins import *
 import sys, getopt, logging, traceback, string, os
 
 gVersion = "0.9"
+
 
 def usage():
     print("\nsslstrip " + gVersion + " by Moxie Marlinspike (@xtr4nge v0.9.2)")
@@ -48,28 +48,50 @@ def usage():
     print("-w <filename>, --write=<filename> Specify file to log to (optional).")
     print("-p , --post                       Log only SSL POSTs. (default)")
     print("-s , --ssl                        Log all SSL traffic to and from server.")
-    print("-a , --all                        Log all SSL and HTTP traffic to and from server.")
+    print(
+        "-a , --all                        Log all SSL and HTTP traffic to and from server."
+    )
     print("-l <port>, --listen=<port>        Port to listen on (default 10000).")
-    print("-f , --favicon                    Substitute a lock favicon on secure requests.")
+    print(
+        "-f , --favicon                    Substitute a lock favicon on secure requests."
+    )
     print("-k , --killsessions               Kill sessions in progress.")
-    print("-t <config>, --tamper <config>    Enable response tampering with settings from <config>.")
-    print("-i , --inject                     Inject code into HTML pages using a text file.")
+    print(
+        "-t <config>, --tamper <config>    Enable response tampering with settings from <config>."
+    )
+    print(
+        "-i , --inject                     Inject code into HTML pages using a text file."
+    )
     print("-h                                print(this help message.")
     print("")
 
+
 def parseOptions(argv):
-    logFile      = 'sslstrip.log'
-    logLevel     = logging.WARNING
-    listenPort   = 10000
+    logFile = "sslstrip.log"
+    logLevel = logging.WARNING
+    listenPort = 10000
     spoofFavicon = False
     killSessions = False
     tamperConfigFile = False
-    injectFile   = False
+    injectFile = False
 
     try:
-        opts, args = getopt.getopt(argv, "hw:l:psafkt:i:", 
-                                   ["help", "write=", "post", "ssl", "all", "listen=", 
-                                    "favicon", "killsessions", "tamper=", "inject"])
+        opts, args = getopt.getopt(
+            argv,
+            "hw:l:psafkt:i:",
+            [
+                "help",
+                "write=",
+                "post",
+                "ssl",
+                "all",
+                "listen=",
+                "favicon",
+                "killsessions",
+                "tamper=",
+                "inject",
+            ],
+        )
 
         for opt, arg in opts:
             if opt in ("-h", "--help"):
@@ -94,36 +116,45 @@ def parseOptions(argv):
             elif opt in ("-i", "--inject"):
                 injectFile = arg
 
-        return (logFile, logLevel, listenPort, spoofFavicon, killSessions, tamperConfigFile, injectFile)
-                    
-    except getopt.GetoptError:           
-        usage()                          
-        sys.exit(2)                         
+        return (
+            logFile,
+            logLevel,
+            listenPort,
+            spoofFavicon,
+            killSessions,
+            tamperConfigFile,
+            injectFile,
+        )
+
+    except getopt.GetoptError:
+        usage()
+        sys.exit(2)
+
 
 def main(argv):
-    (logFile, logLevel, listenPort, spoofFavicon, killSessions, tamperConfigFile, injectFile) = parseOptions(argv)
+    (
+        logFile,
+        logLevel,
+        listenPort,
+        spoofFavicon,
+        killSessions,
+        tamperConfigFile,
+        injectFile,
+    ) = parseOptions(argv)
 
-    logging.basicConfig(level=logLevel, format='%(asctime)s %(message)s',
-                        filename=logFile, filemode='w')
-
-    # Verify is inject option is enabled
-    if (injectFile != False):
-        try:
-            with open(injectFile, 'r') as f:
-                HTMLInjector.getInstance().setInjectionCode(f.read())
-        except IOError as e:
-            logging.warning("Couldn't read " + injectFile)
+    logging.basicConfig(
+        level=logLevel, format="%(asctime)s %(message)s", filename=logFile, filemode="w"
+    )
 
     URLMonitor.getInstance().setFaviconSpoofing(spoofFavicon)
     CookieCleaner.getInstance().setEnabled(killSessions)
     ResponseTampererFactory.buildTamperer(tamperConfigFile)
-    strippingFactory              = http.HTTPFactory(timeout=10)
-    strippingFactory.protocol     = StrippingProxy
+    strippingFactory = http.HTTPFactory(timeout=10)
+    strippingFactory.protocol = StrippingProxy
 
     reactor.listenTCP(int(listenPort), strippingFactory)
-                
-    print("\nsslstrip " + gVersion + " by Moxie Marlinspike running...")
 
+    print("\nsslstrip " + gVersion + " by Moxie Marlinspike running...")
 
     plugins_manager = ProxyPluginsManager.getInstance()
 
@@ -131,8 +162,8 @@ def main(argv):
     for p in all_plugins:
         plugins_manager.plugins = p
 
-
     reactor.run()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main(sys.argv[1:])
