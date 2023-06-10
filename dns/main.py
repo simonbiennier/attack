@@ -3,7 +3,7 @@ from netfilterqueue import NetfilterQueue
 import os
 
 web_server = "192.168.86.42"
-hosts = [b"ing.nl.", b"www.ing.nl."]
+hosts = [b"ing.nl.", b"www.ing.nl.", b"api.www.ing.nl."]
 
 dns_hosts = {h: web_server for h in hosts}
 
