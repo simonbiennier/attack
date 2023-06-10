@@ -5,6 +5,17 @@ import platform
 import netifaces
 import re
 
+def _enable_iproute():
+    """
+    Enables IP route (IP Forward) in linux
+    """
+    file_path = "/proc/sys/net/ipv4/ip_forward"
+    with open(file_path) as f:
+        if f.read() == 1:
+            # already enabled
+            return
+    with open(file_path, "w") as f:
+        print(1, file=f)
 
 def get_mac(ip):
     """
@@ -89,6 +100,7 @@ def get_default_gateway():
 
 
 def main():
+    _enable_iproute()
     print("Scanning network for potential targets...")
     # grab the gateway(router)
     gateway = get_default_gateway()

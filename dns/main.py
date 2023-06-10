@@ -30,7 +30,7 @@ def process_packet(packet):
 def modify_packet(packet):
     # get the DNS question name, the domain name
     qname = packet[DNSQR].qname
-    if qname not in dns_hosts:
+    if qname not in hosts:
         # if the website isn't in our record
         # we don't wanna modify that
         print("[Not Modified]:", qname)
@@ -66,4 +66,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         # if want to exit, make sure we
         # remove that rule we just inserted, going back to normal.
-        os.system("iptables --flush")
+        os.system("sudo iptables --flush")
