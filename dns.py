@@ -78,9 +78,3 @@ if __name__ == "__main__":
             # if want to exit, make sure we
             # remove that rule we just inserted, going back to normal.
             os.system("sudo iptables --flush")
-
-        queue.run()
-    except KeyboardInterrupt:
-        # if want to exit, make sure we
-        # remove that rule we just inserted, going back to normal.
-        os.system("sudo iptables --flush")
