@@ -101,6 +101,7 @@ def get_default_gateway():
 
 def main():
     _enable_iproute()
+    response = input("Please note you should ensure you can reach your target. ping them if necessary, input any key to continue... ")
     print("Scanning network for potential targets...")
     # grab the gateway(router)
     gateway = get_default_gateway()
