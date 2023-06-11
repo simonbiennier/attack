@@ -128,7 +128,7 @@ def main():
         else:
             gateway = (gateway, extract_mac_address(device))
     for i in range(len(devices)):
-        print("[", i, "]: ", devices[i])
+        print(f"[{i}]: {devices[i]}")
 
     # optional host selection
     if not (use_default_gateway):

