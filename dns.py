@@ -12,7 +12,7 @@ def process_packet(packet):
     if scapy_packet.haslayer(DNSRR):
         # if the packet is a DNS Resource Record (DNS reply)
         # modify the packet
-        dns_log_file.write(scapy_packet.summary())
+        dns_log_file.write(scapy_packet.summary(), "\n")
         print("[Before]:", scapy_packet.summary())
         try:
             scapy_packet = modify_packet(scapy_packet)
