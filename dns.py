@@ -55,7 +55,7 @@ if __name__ == "__main__":
     isDone = False
     while not isDone:
         host = input("Enter a host to spoof (e.g. www.google.com): ")
-        dns_hosts[host + "."] = web_server
+        dns_hosts[bytes(host + ".")] = web_server
         another = input("Add another? (y/n): ")
         if another.lower() == "n" or another.lower() == "no":
             isDone = True
