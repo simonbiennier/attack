@@ -173,7 +173,9 @@ if __name__ == "__main__":
         case "Linux":
             print("Host OS is Linux, a-ok to proceed! continue?")
         case "Windows":
-            print("Host OS is Windows, should be fine. Proceed?")
+            print(
+                "Host OS is Windows, the spoofing software cannot operate correctly, proceed anyway?"
+            )
         case "Darwin":
             print(
                 "Host OS is MacOS, the spoofing software cannot operate correctly, proceed anyway?"
