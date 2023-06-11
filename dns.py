@@ -13,7 +13,7 @@ def process_packet(packet):
         # modify the packet
         print("[Before]:", scapy_packet.summary())
         try:
-            scapy_packet = modify_packet(scapy_packet, dns_hosts)
+            scapy_packet = modify_packet(scapy_packet)
         except IndexError:
             # not UDP packet, this can be IPerror/UDPerror packets
             pass
